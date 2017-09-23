@@ -18,15 +18,18 @@ public abstract class Dao {
 
     private static int poolSize = 1;
     private final JdbcTemplate db;
-    private String SELECT_WITHOUT_LIMIT = "SELECT * FROM ?";
+    private String SELECT_WITHOUT_LIMIT = "SELECT %s FROM %s";
     private String SELECT_WITH_ORDER_AND_LIMIT = "SELECT %s FROM %s ORDER BY %s LIMIT %d OFFSET %d";
 
     Dao(String url, String driver, int timeout) {
         this.db = getJdbcTemplate(createDataSource(url, driver, timeout));
     }
 
-    public void readAllRows(String table, RowCallbackHandler callback) {
-        db.query(SELECT_WITHOUT_LIMIT, callback, table);
+    public void readAllRows(String table, List<String> columns, RowCallbackHandler callback) {
+        String columnsStr = columns.stream()
+                .reduce((s, s2) -> s + "," + s2).orElse("*");
+        String sql = String.format(SELECT_WITHOUT_LIMIT, columnsStr, table);
+        db.query(sql, callback, table);
     }
 
     public List<List<Object>> readChunk(String table, List<String> columns, List<String> keys, int limit, int offset) {

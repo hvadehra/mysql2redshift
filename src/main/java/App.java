@@ -32,7 +32,7 @@ class App {
         if (!primaryKeys.isEmpty()) {
             fetchInChunks(table, columns, primaryKeys, limit, offset);
         } else {
-            dao.readAllRows(table, new MyRowCallBack(table, columns, limit));
+            dao.readAllRows(table, columns, new MyRowCallBack(table, columns, limit));
         }
     }
 

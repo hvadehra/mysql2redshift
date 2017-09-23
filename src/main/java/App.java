@@ -58,7 +58,7 @@ class App {
             offset = offset + limit;
             writer.close();
             fileWriter.close();
-        }while (true);
+        } while (true);
     }
 
     private class MyRowCallBack implements RowCallbackHandler {
@@ -97,14 +97,14 @@ class App {
             if (null != fileWriter) {
                 fileWriter.close();
             }
-            String fileName = targetDir + "/" + prepareFileName(table, rowNum);
+            String fileName = prepareFileName(table, rowNum);
             fileWriter = new FileWriter(fileName);
             writer = new BufferedWriter(fileWriter, BUFFER_SIZE);
         }
     }
 
     private String prepareFileName(String table, int rowNum) {
-        return fileNamePattern
+        return targetDir + "/" + fileNamePattern
                 .replace("$TABLE", table)
                 .replace("$ROW_NUM", String.valueOf(rowNum));
     }
@@ -119,7 +119,7 @@ class App {
 //            System.out.println("(c,v) : (" + colName + "," + colValueOpt + ")");
             int finalI = i;
             colValueOpt.ifPresent(colValue -> {
-                if (finalI > 0){
+                if (finalI > 0) {
                     sbuf.append(",");
                 }
                 sbuf

@@ -74,6 +74,8 @@ public abstract class Dao {
 
         dataSource.setDriverClassName(driver);
         dataSource.setUrl(url);
+        dataSource.setUsername(System.getenv("SHIFT_DB_USERNAME"));
+        dataSource.setPassword(System.getenv("SHIFT_DB_PASSWORD"));
         return dataSource;
 
     }

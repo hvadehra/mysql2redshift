@@ -13,14 +13,15 @@ public class Main {
     private final static int timeout = 3000;
 
     public static void main(String[] args) {
-        String url = getOpt(args, 0).orElseThrow(Main::fail);
+        String endpoint = getOpt(args, 0).orElseThrow(Main::fail);
         String type = getOpt(args, 1).orElseThrow(Main::fail);
         String dbName = getOpt(args, 2).orElseThrow(Main::fail);
         String table = getOpt(args, 3).orElseThrow(Main::fail);
         int limit = Integer.valueOf(getOpt(args, 4).orElse("10000"));
         int offset = Integer.valueOf(getOpt(args, 5).orElse("0"));
 
-        Dao dao = getDao(url, type, timeout);
+        String connString = getConnString(endpoint, type);
+        Dao dao = getDao(connString, type, timeout);
         try {
             new App(dao, dbName, targetDir).start(table, limit, offset);
         } catch (IOException e) {
@@ -29,8 +30,13 @@ public class Main {
         }
     }
 
+    private static String getConnString(String endpoint, String type) {
+        String typeStr = "mysql".equals(type) ? "mysql" : "postgresql";
+        return "jdbc:" + typeStr +"://" + endpoint;
+    }
+
     private static RuntimeException fail() {
-        return new RuntimeException("java Main <url> <mysql|pg> <db> <table> [limit offset]");
+        return new RuntimeException("java Main <url> <user> <pass> <mysql|pg> <db> <table> [limit offset]");
     }
 
     private static Optional<String> getOpt(String[] args, int index) {

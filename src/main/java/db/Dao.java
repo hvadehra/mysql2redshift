@@ -29,7 +29,7 @@ public abstract class Dao {
         String columnsStr = columns.stream()
                 .reduce((s, s2) -> s + "," + s2).orElse("*");
         String sql = String.format(SELECT_WITHOUT_LIMIT, columnsStr, table);
-        db.query(sql, callback, table);
+        db.query(sql, callback);
     }
 
     public List<List<Object>> readChunk(String table, List<String> columns, List<String> keys, int limit, int offset) {

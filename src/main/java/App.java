@@ -39,11 +39,11 @@ class App {
     private void fetchInChunks(String table, List<String> columns, List<String> primaryKeys, int limit, int offset) throws IOException {
         do {
             String fileName = prepareFileName(table, offset);
-            FileWriter fileWriter = new FileWriter(fileName);
-            BufferedWriter writer = new BufferedWriter(fileWriter);
             List<List<Object>> rows = dao.readChunk(table, columns, primaryKeys, limit, offset);
             System.out.println("Read " + rows.size() + " rows");
             if (rows.isEmpty()) break;
+            FileWriter fileWriter = new FileWriter(fileName);
+            BufferedWriter writer = new BufferedWriter(fileWriter);
             rows.stream()
                     .map(row -> rowAsJsonLine(row, columns))
                     .forEach(rowStr -> {
@@ -58,6 +58,9 @@ class App {
             offset = offset + limit;
             writer.close();
             fileWriter.close();
+            if (rows.size() < limit){
+                break;
+            }
         } while (true);
     }
 
